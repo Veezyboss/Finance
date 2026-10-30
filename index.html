@@ -53,8 +53,8 @@ button.x{background:none;border:0;color:var(--mut);cursor:pointer;font-size:16px
 .empty,.note{color:var(--mut);padding:8px 0;font-size:13px}
 #lock{display:none;position:fixed;inset:0;z-index:99;background:linear-gradient(160deg,#071642,var(--n2));align-items:center;justify-content:center;padding:20px}
 #lock.on{display:flex}
-#lock .box{background:#fff;border:2px solid var(--g);border-radius:16px;padding:22px;max-width:340px;width:100%;text-align:center}
-#lock img{width:84px;border-radius:18px}#lock h2{margin:8px 0}#lock input{width:100%;margin:6px 0;flex:none}#lock .err{color:var(--out);min-height:20px;font-size:13px}
+#lock .box{background:#fff;border:2px solid var(--g);border-radius:16px;padding:22px;max-width:380px;width:100%;text-align:center}
+#lock img{width:100%;max-width:240px;height:auto}#lock h2{margin:8px 0}#lock input{width:100%;margin:6px 0;flex:none}#lock .err{color:var(--out);min-height:20px;font-size:13px}
 @media(max-width:800px){.shell{flex-direction:column}aside{width:auto;display:flex;gap:6px;align-items:center;overflow-x:auto;padding:8px}aside .lg{margin:0;flex:none}aside button{width:auto;flex:none}}
 @media print{aside,.tabs,.per,.noprint{display:none}}
 </style>
@@ -164,7 +164,7 @@ function hash(p,s){var e=new TextEncoder();return crypto.subtle.importKey('raw',
 function newPw(p,done){var s=hx(crypto.getRandomValues(new Uint8Array(16)));hash(p,s).then(function(h){PW={s:s,h:h};localStorage.setItem('bpf_pw',JSON.stringify(PW));done()})}
 function isLocked(){return document.getElementById('lock').classList.contains('on')}
 function lockUI(){var L=document.getElementById('lock');L.classList.add('on');
- L.innerHTML='<div class="box"><img src="icons/icon-192.png" alt="Bright Path logo"><h2>Bright Path Finance</h2>'+(PW?'<p>Enter your password</p><input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key===\'Enter\')unlock()"><div class="err" id="le"></div><button class="a" onclick="unlock()">Unlock</button>':'<p>Create a password to protect this app</p><input id="lp" type="password" placeholder="New password (min 4 characters)" autocomplete="new-password"><input id="lq" type="password" placeholder="Confirm password" autocomplete="new-password" onkeydown="if(event.key===\'Enter\')unlock()"><div class="err" id="le"></div><button class="a" onclick="unlock()">Set password</button>')+'</div>';
+ L.innerHTML='<div class="box"><img src="icons/logo-lock.png" alt="Bright Path Educational Services logo"><h2>Bright Path Finance</h2>'+(PW?'<p>Enter your password</p><input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key===\'Enter\')unlock()"><div class="err" id="le"></div><button class="a" onclick="unlock()">Unlock</button>':'<p>Create a password to protect this app</p><input id="lp" type="password" placeholder="New password (min 4 characters)" autocomplete="new-password"><input id="lq" type="password" placeholder="Confirm password" autocomplete="new-password" onkeydown="if(event.key===\'Enter\')unlock()"><div class="err" id="le"></div><button class="a" onclick="unlock()">Set password</button>')+'</div>';
  document.getElementById('lp').focus()}
 function unlock(){var p=v('lp'),e=document.getElementById('le'),bad=function(){e.textContent='Password lock needs a secure (HTTPS) connection'};
  if(!PW){if(p.length<4){e.textContent='Use at least 4 characters';return}if(p!==v('lq')){e.textContent='Passwords do not match';return}newPw(p,openApp).catch(bad)}
