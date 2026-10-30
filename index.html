@@ -7,8 +7,8 @@
 <meta name="theme-color" content="#0a1f5c">
 <meta name="description" content="Income, expenditure, fees and staff tracker for Bright Path">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/icon-48.png">
-<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icon-48.png">
+<link rel="apple-touch-icon" href="icon-180.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <style>
@@ -154,7 +154,7 @@ function imp(f){if(!f)return;if(!confirm('Replace current data with this file?')
 function render(){
  var T=[['home','Home'],['edu','Educational Services'],['acad','Academy'],['ceo','CEO’s Desk']],N=[['home','⌂ Dashboard'],['year','▤ Reports'],['set','⚙ Settings']];
  document.getElementById('tabs').innerHTML=T.map(function(t){return'<button class="'+(tab===t[0]?'on':'')+'" onclick="setTab(\''+t[0]+'\')">'+t[1]+'</button>'}).join('');
- document.getElementById('side').innerHTML='<div class="lg"><img src="icons/icon-96.png" alt="Bright Path logo"><span>Bright Path</span></div>'+N.map(function(t){return'<button class="'+(tab===t[0]?'on':'')+'" onclick="setTab(\''+t[0]+'\')">'+t[1]+'</button>'}).join('')+'<button onclick="lockNow()">🔒 Lock</button>';
+ document.getElementById('side').innerHTML='<div class="lg"><img src="icon-96.png" alt="Bright Path logo"><span>Bright Path</span></div>'+N.map(function(t){return'<button class="'+(tab===t[0]?'on':'')+'" onclick="setTab(\''+t[0]+'\')">'+t[1]+'</button>'}).join('')+'<button onclick="lockNow()">🔒 Lock</button>';
  document.getElementById('per').innerHTML=tab==='set'?'':'<button onclick="step(-1)" aria-label="Previous">‹</button><span>'+(tab==='year'?Y:ml())+'</span><button onclick="step(1)" aria-label="Next">›</button>';
  var h=tab==='home'?home():tab==='year'?year():tab==='set'?setg():'<div class="note" style="margin-top:8px">Cycle: '+cyc()+'</div>'+summary(tab)+'<h2>Income &amp; expenditure</h2><div class="two">'+txTable(tab,'in')+txTable(tab,'out')+'</div>'+(tab==='edu'?edu():tab==='acad'?acad():ceo())+(tab!=='ceo'?stf(tab):'');
  document.getElementById('app').innerHTML=h}
@@ -164,7 +164,7 @@ function hash(p,s){var e=new TextEncoder();return crypto.subtle.importKey('raw',
 function newPw(p,done){var s=hx(crypto.getRandomValues(new Uint8Array(16)));hash(p,s).then(function(h){PW={s:s,h:h};localStorage.setItem('bpf_pw',JSON.stringify(PW));done()})}
 function isLocked(){return document.getElementById('lock').classList.contains('on')}
 function lockUI(){var L=document.getElementById('lock');L.classList.add('on');
- L.innerHTML='<div class="box"><img src="icons/logo-lock.png" alt="Bright Path Educational Services logo"><h2>Bright Path Finance</h2>'+(PW?'<p>Enter your password</p><input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key===\'Enter\')unlock()"><div class="err" id="le"></div><button class="a" onclick="unlock()">Unlock</button>':'<p>Create a password to protect this app</p><input id="lp" type="password" placeholder="New password (min 4 characters)" autocomplete="new-password"><input id="lq" type="password" placeholder="Confirm password" autocomplete="new-password" onkeydown="if(event.key===\'Enter\')unlock()"><div class="err" id="le"></div><button class="a" onclick="unlock()">Set password</button>')+'</div>';
+ L.innerHTML='<div class="box"><img src="logo-lock.png" alt="Bright Path Educational Services logo"><h2>Bright Path Finance</h2>'+(PW?'<p>Enter your password</p><input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key===\'Enter\')unlock()"><div class="err" id="le"></div><button class="a" onclick="unlock()">Unlock</button>':'<p>Create a password to protect this app</p><input id="lp" type="password" placeholder="New password (min 4 characters)" autocomplete="new-password"><input id="lq" type="password" placeholder="Confirm password" autocomplete="new-password" onkeydown="if(event.key===\'Enter\')unlock()"><div class="err" id="le"></div><button class="a" onclick="unlock()">Set password</button>')+'</div>';
  document.getElementById('lp').focus()}
 function unlock(){var p=v('lp'),e=document.getElementById('le'),bad=function(){e.textContent='Password lock needs a secure (HTTPS) connection'};
  if(!PW){if(p.length<4){e.textContent='Use at least 4 characters';return}if(p!==v('lq')){e.textContent='Passwords do not match';return}newPw(p,openApp).catch(bad)}
