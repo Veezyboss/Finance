@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bright Path Finance</title>
+<meta name="theme-color" content="#0a1f5c">
+<meta name="description" content="Income, expenditure, fees and staff tracker for Bright Path">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-48.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+:root{--n:#0a1f5c;--n2:#123585;--g:#f2b705;--bg:#eef1f8;--tx:#14204a;--mut:#5d6a8f;--in:#12853f;--out:#d02b3a;--bd:#dfe4f1;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+.shell{display:flex;min-height:100vh}
+aside{width:190px;background:linear-gradient(180deg,#071642,var(--n));color:#fff;padding:12px;flex:none}
+aside .lg{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--g);margin-bottom:14px}
+aside img{width:40px;height:40px;border-radius:10px}
+aside button{display:block;width:100%;text-align:left;background:none;border:0;color:#dfe6ff;padding:10px;border-radius:10px;font:inherit;cursor:pointer}
+aside button.on{background:rgba(242,183,5,.18);border:1px solid var(--g);color:#fff}
+main{flex:1;min-width:0;padding:12px}
+.hd{background:linear-gradient(120deg,var(--n),var(--n2));border:1px solid var(--g);border-radius:14px;padding:12px;color:#fff}
+.hd h1{margin:0 0 8px;font:700 22px Georgia,serif}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.tabs{display:flex;gap:6px;overflow-x:auto}
+.tabs button,.per button{flex:none;border:1px solid var(--g);background:transparent;color:#fff;padding:7px 13px;border-radius:20px;font:inherit;cursor:pointer}
+.tabs button.on{background:var(--g);color:var(--n);font-weight:700}
+.per{display:flex;align-items:center;gap:6px;font-weight:600}
+.per button{padding:3px 10px}
+h2{font:700 17px Georgia,serif;margin:16px 0 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:12px}
+.card small{color:var(--mut);display:block}.card b{font-size:21px}
+.s1{background:#e6f8ee;border-color:#a8e0bf}.s2{background:#fdeaec;border-color:#f1b3ba}.s3{background:#e8f0ff;border-color:#b5cdf7}.s4{background:#f0eafc;border-color:#cdbdf2}
+.in{color:var(--in)}.out{color:var(--out)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:10px}
+.sc{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--bd);white-space:nowrap}
+th{background:var(--n);color:#fff;font-size:12px}
+td.r,th.r{text-align:right}
+.f{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+input,select{font:inherit;padding:8px;border:1px solid var(--bd);border-radius:8px;background:#fff;color:var(--tx);min-width:0}
+input{flex:1 1 110px}
+.qa{background:linear-gradient(120deg,var(--n),var(--n2));border:1px solid var(--g);border-radius:14px;padding:4px 12px;color:#fff}
+.qa h2{color:var(--g);margin:8px 0 0}
+button.a{font:inherit;font-weight:700;padding:8px 16px;border:0;border-radius:8px;background:linear-gradient(var(--g),#d99a00);color:var(--n);cursor:pointer}
+button.x{background:none;border:0;color:var(--mut);cursor:pointer;font-size:16px}
+.tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;border:1px solid var(--bd)}
+.empty,.note{color:var(--mut);padding:8px 0;font-size:13px}
+@media(max-width:800px){.shell{flex-direction:column}aside{width:auto;display:flex;gap:6px;align-items:center;overflow-x:auto;padding:8px}aside .lg{margin:0;flex:none}aside button{width:auto;flex:none}}
+@media print{aside,.tabs,.per,.noprint{display:none}}
+</style>
+</head>
+<body>
+<div class="shell"><aside id="side"></aside><main><div class="hd"><h1>Bright Path Finance</h1><div class="row"><div class="tabs" id="tabs"></div><div class="per" id="per"></div></div></div><div id="app"></div></main></div>
+<script>
+var DIV={edu:'Educational Services',acad:'Academy',ceo:'CEO’s Desk'},td=new Date().toISOString().slice(0,10),M=td.slice(0,7),Y=td.slice(0,4),tab='home',dip=null;
+var S={open:0,tx:[],pipe:[],stu:[],wish:[],staff:[]};
+try{var r=localStorage.getItem('bpf1');if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+function save(){try{localStorage.setItem('bpf1',JSON.stringify(S))}catch(e){alert('Could not save. Export a backup from Settings.')}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function m(n){return '₦'+Number(n||0).toLocaleString('en-NG',{maximumFractionDigits:2})}
+function id(){return Date.now()+Math.floor(Math.random()*1000)}
+function v(i){return document.getElementById(i).value}
+function sum(d,t,c,p){p=p||M;return S.tx.filter(function(x){return(!d||x.div===d)&&x.type===t&&(!c||x.cat===c)&&x.d.slice(0,p.length)===p}).reduce(function(a,x){return a+x.amt},0)}
+function cash(){return S.open+S.tx.reduce(function(a,x){return a+(x.type==='in'?x.amt:-x.amt)},0)}
+function ml(){return new Date(M+'-01T00:00:00').toLocaleString('en-GB',{month:'long',year:'numeric'})}
+function cyc(){var y=+M.slice(0,4),mo=+M.slice(5);return '1 – '+new Date(y,mo,0).getDate()+' '+ml()}
+function dflt(){return M===td.slice(0,7)?td:M+'-01'}
+function step(n){if(tab==='year')Y=String(+Y+n);else{var d=new Date(M+'-01T00:00:00');d.setMonth(d.getMonth()+n);M=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}render()}
+function setTab(t){tab=t;render();window.scrollTo(0,0)}
+function del(k,i){S[k]=S[k].filter(function(x){return x.id!==i});save();render()}
+function addTx(d,t,p){var a=parseFloat(v(p+'a'));if(!(a>0))return alert('Enter an amount');var c=document.getElementById(p+'c');
+ S.tx.push({id:id(),d:v(p+'d')||dflt(),div:d||v('qv'),type:t||v('qt'),cat:c?v(p+'c'):'op',desc:v(p+'n')||'(no note)',amt:a});save();render()}
+function txTable(d,t){
+ var rows=S.tx.filter(function(x){return x.div===d&&x.type===t&&x.d.slice(0,7)===M}).sort(function(a,b){return b.d<a.d?-1:1}),p=d+t;
+ var h='<div class="card"><b class="'+t+'" style="font-size:16px">'+(t==='in'?'Income':'Expenditure')+'</b><div class="f"><input type="date" id="'+p+'d" value="'+dflt()+'"><input id="'+p+'n" placeholder="Description"><input id="'+p+'a" type="number" inputmode="decimal" placeholder="Amount ₦">';
+ if(t==='out')h+='<select id="'+p+'c"><option value="direct">Direct cost</option><option value="op">Operating</option></select>';
+ h+='<button class="a" onclick="addTx(\''+d+'\',\''+t+'\',\''+p+'\')">Add</button></div><div class="sc"><table>';
+ if(!rows.length)return h+'</table><div class="empty">Nothing this month</div></div></div>';
+ h+='<tr><th>Date</th><th>Description</th>'+(t==='out'?'<th>Type</th>':'')+'<th class="r">Amount</th><th></th></tr>';
+ rows.forEach(function(x){h+='<tr><td>'+x.d+'</td><td>'+esc(x.desc)+'</td>'+(t==='out'?'<td><span class="tag">'+(x.cat==='direct'?'Direct':'Operating')+'</span></td>':'')+'<td class="r '+t+'">'+m(x.amt)+'</td><td><button class="x" onclick="del(\'tx\','+x.id+')">×</button></td></tr>'});
+ return h+'</table></div></div>'}
+function summary(d){var i=sum(d,'in'),dc=sum(d,'out','direct'),oc=sum(d,'out','op'),g=i-dc,n=g-oc;
+ function c(l,x,k,s){return '<div class="card '+s+'"><small>'+l+'</small><b class="'+k+'">'+m(x)+'</b></div>'}
+ return '<div class="grid">'+c('Income',i,'in','s1')+c('Direct costs',dc,'out','s2')+c('Gross '+(g<0?'loss':'profit'),Math.abs(g),g<0?'out':'in','s3')+c('Operating expenses',oc,'out','s2')+c('Net '+(n<0?'loss':'profit'),Math.abs(n),n<0?'out':'in','s4')+'</div>'}
+function home(){
+ var ti=sum(0,'in'),to=sum(0,'out'),n=ti-to;
+ var h='<div class="grid" style="margin-top:10px"><div class="card s1"><small>Total income</small><b class="in">'+m(ti)+'</b></div><div class="card s2"><small>Total expenditure</small><b class="out">'+m(to)+'</b></div><div class="card s3"><small>Net '+(n<0?'loss':'profit')+'</small><b class="'+(n<0?'out':'in')+'">'+m(Math.abs(n))+'</b></div><div class="card s4"><small>Money at hand (all time)</small><b>'+m(cash())+'</b></div></div>';
+ h+='<div class="qa"><h2>Quick add</h2><div class="f"><select id="qv"><option value="edu">Educational Services</option><option value="acad">Academy</option><option value="ceo">CEO’s Desk</option></select><select id="qt"><option value="in">Income</option><option value="out">Expenditure</option></select><select id="qc"><option value="op">Operating</option><option value="direct">Direct cost</option></select><input type="date" id="qd" value="'+dflt()+'"><input id="qn" placeholder="Description"><input id="qa" type="number" inputmode="decimal" placeholder="Amount ₦"><button class="a" onclick="addTx(\'\',\'\',\'q\')">Add</button></div></div>';
+ h+='<h2>By category · '+ml()+'</h2><div class="card sc"><table><tr><th>Category</th><th class="r">Income</th><th class="r">Expenditure</th><th class="r">Gross</th><th class="r">Net</th><th></th></tr>';
+ Object.keys(DIV).forEach(function(d){var i=sum(d,'in'),o=sum(d,'out'),dc=sum(d,'out','direct');h+='<tr><td>'+DIV[d]+'</td><td class="r in">'+m(i)+'</td><td class="r out">'+m(o)+'</td><td class="r">'+m(i-dc)+'</td><td class="r '+(i-o<0?'out':'in')+'">'+m(i-o)+'</td><td><button class="x" onclick="setTab(\''+d+'\')">›</button></td></tr>'});
+ var ow=S.stu.reduce(function(a,s){return a+Math.max(0,s.fee-s.paid)},0),cl=S.pipe.filter(function(p){return p.stage==='current'}).length,wl=S.wish.filter(function(w){return!w.got}).reduce(function(a,w){return a+w.amt},0);
+ h+='</table></div><h2>At a glance</h2><div class="grid"><div class="card s1"><small>Student fees owed</small><b class="out">'+m(ow)+'</b></div><div class="card s3"><small>Current clients</small><b>'+cl+'</b></div><div class="card s4"><small>Wishlist expected</small><b>'+m(wl)+'</b></div></div>';
+ var rec=S.tx.filter(function(x){return x.d.slice(0,7)===M}).sort(function(a,b){return b.id-a.id}).slice(0,8);
+ h+='<h2>Recent transactions</h2><div class="card sc">';
+ if(!rec.length)return h+'<div class="empty">No transactions this month. Add your first one above.</div></div>';
+ h+='<table>';rec.forEach(function(x){h+='<tr><td>'+x.d+'</td><td>'+DIV[x.div]+'</td><td>'+esc(x.desc)+'</td><td class="r '+x.type+'">'+(x.type==='in'?'+':'−')+m(x.amt)+'</td><td><button class="x" onclick="del(\'tx\','+x.id+')">×</button></td></tr>'});
+ return h+'</table></div>'}
+function year(){
+ var h='<h2>Yearly report · '+Y+'</h2><div class="card sc"><table><tr><th>Month</th><th class="r">Income</th><th class="r">Expenditure</th><th class="r">Gross</th><th class="r">Net</th></tr>',T=[0,0,0];
+ for(var i=1;i<=12;i++){var p=Y+'-'+(i<10?'0':'')+i,a=sum(0,'in','',p),o=sum(0,'out','',p),dc=sum(0,'out','direct',p);T[0]+=a;T[1]+=o;T[2]+=dc;
+  h+='<tr><td>'+new Date(p+'-01T00:00:00').toLocaleString('en-GB',{month:'long'})+'</td><td class="r in">'+m(a)+'</td><td class="r out">'+m(o)+'</td><td class="r">'+m(a-dc)+'</td><td class="r '+(a-o<0?'out':'in')+'">'+m(a-o)+'</td></tr>'}
+ h+='<tr><th>Year total</th><th class="r">'+m(T[0])+'</th><th class="r">'+m(T[1])+'</th><th class="r">'+m(T[0]-T[2])+'</th><th class="r">'+m(T[0]-T[1])+'</th></tr></table></div><h2>By category · '+Y+'</h2><div class="card sc"><table><tr><th>Category</th><th class="r">Income</th><th class="r">Expenditure</th><th class="r">Gross</th><th class="r">Net</th></tr>';
+ Object.keys(DIV).forEach(function(d){var a=sum(d,'in','',Y),o=sum(d,'out','',Y),dc=sum(d,'out','direct',Y);h+='<tr><td>'+DIV[d]+'</td><td class="r in">'+m(a)+'</td><td class="r out">'+m(o)+'</td><td class="r">'+m(a-dc)+'</td><td class="r '+(a-o<0?'out':'in')+'">'+m(a-o)+'</td></tr>'});
+ return h+'</table></div><p class="noprint"><button class="a" onclick="window.print()">Print / save as PDF</button></p>'}
+function edu(){
+ var st={potential:'Potential clients',interview:'Interviews secured',current:'Current clients'},h='<h2>Client pipeline</h2><div class="grid">';
+ Object.keys(st).forEach(function(k){h+='<div class="card s3"><small>'+st[k]+'</small><b>'+S.pipe.filter(function(p){return p.stage===k}).length+'</b></div>'});
+ h+='</div><div class="card" style="margin-top:10px"><div class="f"><input id="pn" placeholder="Name / company"><select id="ps"><option value="potential">Potential</option><option value="interview">Interview secured</option><option value="current">Current client</option></select><button class="a" onclick="addP()">Add</button></div><div class="sc"><table>';
+ S.pipe.forEach(function(p){h+='<tr><td>'+esc(p.name)+'</td><td><span class="tag">'+st[p.stage]+'</span></td><td class="r">'+(p.stage!=='current'?'<button class="x" title="Move forward" onclick="adv('+p.id+')">→</button>':'')+'<button class="x" onclick="del(\'pipe\','+p.id+')">×</button></td></tr>'});
+ return h+'</table></div></div>'}
+function addP(){var n=v('pn').trim();if(!n)return;S.pipe.push({id:id(),name:n,stage:v('ps')});save();render()}
+function adv(i){S.pipe.forEach(function(p){if(p.id===i)p.stage=p.stage==='potential'?'interview':'current'});save();render()}
+function endD(s){var d=new Date(s+'T00:00:00');d.setMonth(d.getMonth()+1);d.setDate(d.getDate()-1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function acad(){
+ var h='<h2>Student fee tracker</h2><div class="card"><div class="f"><input id="sn" placeholder="Student name"><input id="sc" placeholder="Class"><input id="sf" type="number" inputmode="decimal" placeholder="Monthly fee ₦"><input id="ss" type="date" value="'+td+'"><button class="a" onclick="addS()">Add student</button></div><div class="note">Each cycle runs one full month from the start of lessons.</div><div class="sc"><table>';
+ if(!S.stu.length)return h+'</table><div class="empty">No students yet</div></div>';
+ h+='<tr><th>Student</th><th>Class</th><th>Start</th><th>End</th><th class="r">Fee</th><th class="r">Paid</th><th class="r">Owing</th><th>Status</th><th>Pay</th><th></th></tr>';
+ S.stu.forEach(function(s){var e=endD(s.start),o=Math.max(0,s.fee-s.paid);
+  h+='<tr><td>'+esc(s.name)+'</td><td>'+esc(s.cls)+'</td><td>'+s.start+'</td><td>'+e+'</td><td class="r">'+m(s.fee)+'</td><td class="r in">'+m(s.paid)+'</td><td class="r out">'+m(o)+'</td><td><span class="tag">'+(o===0?'Paid':td>e?'Overdue':'Owing')+'</span></td><td><input id="p'+s.id+'" type="number" inputmode="decimal" style="width:90px;flex:none" placeholder="₦"><button class="x" title="Record payment" onclick="pay('+s.id+')">✔</button><button class="x" title="Start next cycle" onclick="renew('+s.id+')">↻</button></td><td><button class="x" onclick="del(\'stu\','+s.id+')">×</button></td></tr>'});
+ return h+'</table></div></div>'}
+function addS(){var n=v('sn').trim(),f=parseFloat(v('sf'));if(!n||!(f>=0))return alert('Enter name and fee');S.stu.push({id:id(),name:n,cls:v('sc'),fee:f,paid:0,start:v('ss')||td});save();render()}
+function pay(i){var a=parseFloat(v('p'+i));if(!(a>0))return;S.stu.forEach(function(s){if(s.id===i){s.paid+=a;S.tx.push({id:id(),d:td,div:'acad',type:'in',cat:'op',desc:'Fee: '+s.name,amt:a})}});save();render()}
+function renew(i){S.stu.forEach(function(s){if(s.id===i){var d=new Date(endD(s.start)+'T00:00:00');d.setDate(d.getDate()+1);s.start=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');s.paid=0}});save();render()}
+function stf(d){
+ var L=S.staff.filter(function(s){return s.div===d}),h='<h2>Staff</h2><div class="card"><div class="f"><input id="tn" placeholder="Staff name"><input id="tr" placeholder="Role"><input id="ts" type="number" inputmode="decimal" placeholder="Monthly salary ₦"><button class="a" onclick="addT(\''+d+'\')">Add staff</button></div><div class="sc"><table>';
+ if(!L.length)return h+'</table><div class="empty">No staff yet</div></div>';
+ h+='<tr><th>Name</th><th>Role</th><th class="r">Salary</th><th>'+ml()+'</th><th></th></tr>';
+ L.forEach(function(s){var pd=S.tx.some(function(x){return x.sid===s.id&&x.d.slice(0,7)===M});h+='<tr><td>'+esc(s.name)+'</td><td>'+esc(s.role)+'</td><td class="r">'+m(s.sal)+'</td><td>'+(pd?'<span class="tag in">Paid</span>':'<button class="a" onclick="payT('+s.id+')">Pay</button>')+'</td><td><button class="x" onclick="del(\'staff\','+s.id+')">×</button></td></tr>'});
+ return h+'</table></div><div class="note">Paying adds an operating expense to this category for the selected month.</div></div>'}
+function addT(d){var n=v('tn').trim(),a=parseFloat(v('ts'));if(!n||!(a>=0))return alert('Enter name and salary');S.staff.push({id:id(),div:d,name:n,role:v('tr'),sal:a});save();render()}
+function payT(i){S.staff.forEach(function(s){if(s.id===i)S.tx.push({id:id(),d:dflt(),div:s.div,type:'out',cat:'op',desc:'Salary: '+s.name,amt:s.sal,sid:s.id})});save();render()}
+function ceo(){
+ var h='<h2>Bank (money at hand)</h2><div class="grid"><div class="card s4"><small>Currently at hand</small><b>'+m(cash())+'</b></div><div class="card"><small>Opening balance</small><div class="f"><input id="ob" type="number" inputmode="decimal" value="'+S.open+'"><button class="a" onclick="S.open=parseFloat(v(\'ob\'))||0;save();render()">Set</button></div></div></div><div class="note">At hand = opening balance + all income − all expenditure, across every month and category.</div>';
+ h+='<h2>Wishlist (expecting soon)</h2><div class="card"><div class="f"><input id="wi" placeholder="Item / expected money"><input id="wa" type="number" inputmode="decimal" placeholder="Amount ₦"><input id="wd" type="date"><button class="a" onclick="addW()">Add</button></div><div class="sc"><table>';
+ S.wish.forEach(function(w){h+='<tr style="'+(w.got?'opacity:.5':'')+'"><td>'+esc(w.item)+'</td><td class="r">'+m(w.amt)+'</td><td>'+(w.date||'')+'</td><td><button class="x" title="Mark received" onclick="got('+w.id+')">'+(w.got?'↩':'✔')+'</button><button class="x" onclick="del(\'wish\','+w.id+')">×</button></td></tr>'});
+ return h+'</table></div></div>'}
+function addW(){var n=v('wi').trim();if(!n)return;S.wish.push({id:id(),item:n,amt:parseFloat(v('wa'))||0,date:v('wd'),got:false});save();render()}
+function got(i){S.wish.forEach(function(w){if(w.id===i)w.got=!w.got});save();render()}
+function setg(){
+ return '<h2>Settings &amp; backup</h2><div class="card"><p>Your data is stored on this device. Export <b>notes.json</b> regularly as a backup, and import it to restore or move to another device.</p><div class="f"><button class="a" onclick="exp()">Export notes.json</button><input type="file" id="imp" accept=".json,application/json" onchange="imp(this.files[0])"></div>'+(dip?'<div class="f"><button class="a" onclick="dip.prompt();dip=null;render()">Install app</button></div>':'')+'<div class="note">Saved records: '+S.tx.length+' transactions, '+S.stu.length+' students, '+S.staff.length+' staff.</div></div>'}
+function exp(){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}));a.download='notes.json';a.click()}
+function ld(t){try{var o=JSON.parse(t);if(!o||!Array.isArray(o.tx))throw 0;S=Object.assign({open:0,tx:[],pipe:[],stu:[],wish:[],staff:[]},o);save();render();alert('Data imported')}catch(e){alert('That file is not a valid Bright Path backup')}}
+function imp(f){if(!f)return;if(!confirm('Replace current data with this file?'))return;var r=new FileReader();r.onload=function(){ld(r.result)};r.readAsText(f)}
+function render(){
+ var T=[['home','Home'],['edu','Educational Services'],['acad','Academy'],['ceo','CEO’s Desk']],N=[['home','⌂ Dashboard'],['year','▤ Reports'],['set','⚙ Settings']];
+ document.getElementById('tabs').innerHTML=T.map(function(t){return'<button class="'+(tab===t[0]?'on':'')+'" onclick="setTab(\''+t[0]+'\')">'+t[1]+'</button>'}).join('');
+ document.getElementById('side').innerHTML='<div class="lg"><img src="icons/icon-96.png" alt="Bright Path logo"><span>Bright Path</span></div>'+N.map(function(t){return'<button class="'+(tab===t[0]?'on':'')+'" onclick="setTab(\''+t[0]+'\')">'+t[1]+'</button>'}).join('');
+ document.getElementById('per').innerHTML=tab==='set'?'':'<button onclick="step(-1)" aria-label="Previous">‹</button><span>'+(tab==='year'?Y:ml())+'</span><button onclick="step(1)" aria-label="Next">›</button>';
+ var h=tab==='home'?home():tab==='year'?year():tab==='set'?setg():'<div class="note" style="margin-top:8px">Cycle: '+cyc()+'</div>'+summary(tab)+'<h2>Income &amp; expenditure</h2><div class="two">'+txTable(tab,'in')+txTable(tab,'out')+'</div>'+(tab==='edu'?edu():tab==='acad'?acad():ceo())+(tab!=='ceo'?stf(tab):'');
+ document.getElementById('app').innerHTML=h}
+var q=new URLSearchParams(location.search);
+if(q.get('tab'))tab=q.get('tab');
+render();
+if(q.get('new')||q.get('text')||q.get('title')){tab='home';render();var n=document.getElementById('qn');if(n&&(q.get('text')||q.get('title')))n.value=[q.get('title'),q.get('text')].filter(Boolean).join(' ');var a=document.getElementById('qa');if(a)a.focus()}
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();dip=e});
+if('launchQueue' in window)launchQueue.setConsumer(function(p){if(p.files&&p.files.length)p.files[0].getFile().then(function(f){return f.text()}).then(ld)});
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').then(function(r){if(r.periodicSync)navigator.permissions.query({name:'periodic-background-sync'}).then(function(p){if(p.state==='granted')r.periodicSync.register('refresh-app',{minInterval:864e5})}).catch(function(){})}).catch(function(){});
+</script>
+</body>
+</html>
