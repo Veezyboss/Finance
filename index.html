@@ -16,7 +16,10 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
 .shell{display:flex;min-height:100vh}
-aside{width:190px;background:linear-gradient(180deg,#071642,var(--n));color:#fff;padding:12px;flex:none}
+aside{position:fixed;top:0;left:0;bottom:0;width:250px;max-width:80vw;z-index:50;background:linear-gradient(180deg,#071642,var(--n));color:#fff;padding:calc(14px + env(safe-area-inset-top,0px)) 12px 12px;transform:translateX(-105%);transition:transform .25s ease;box-shadow:4px 0 18px rgba(0,0,0,.35);overflow-y:auto}
+aside.open{transform:none}
+#scrim{display:none;position:fixed;inset:0;z-index:40;background:rgba(7,22,66,.5)}#scrim.on{display:block}
+.ttl{display:flex;align-items:center;gap:10px;margin-bottom:8px}.ttl h1{margin:0}.mb{background:none;border:1px solid var(--g);color:#fff;font-size:20px;line-height:1;border-radius:10px;padding:5px 11px;cursor:pointer}
 aside .lg{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--g);margin-bottom:14px}
 aside img{width:40px;height:40px;border-radius:10px}
 aside button{display:block;width:100%;text-align:left;background:none;border:0;color:#dfe6ff;padding:10px;border-radius:10px;font:inherit;cursor:pointer}
@@ -55,12 +58,38 @@ button.x{background:none;border:0;color:var(--mut);cursor:pointer;font-size:16px
 #lock.on{display:flex}
 #lock .box{background:#fff;border:2px solid var(--g);border-radius:16px;padding:22px;max-width:380px;width:100%;text-align:center}
 #lock img{width:100%;max-width:240px;height:auto}#lock h2{margin:8px 0}#lock input{width:100%;margin:6px 0;flex:none}#lock .err{color:var(--out);min-height:20px;font-size:13px}
-@media(max-width:800px){.shell{flex-direction:column}aside{width:auto;display:flex;gap:6px;align-items:center;overflow-x:auto;padding:8px}aside .lg{margin:0;flex:none}aside button{width:auto;flex:none}}
+summary{cursor:pointer;display:inline-block;background:linear-gradient(var(--g),#d99a00);color:var(--n);font-weight:700;padding:5px 14px;border-radius:8px;margin:8px 0;list-style:none;font-size:14px}summary::-webkit-details-marker{display:none}
+.card>b:first-child{display:block}.two .card,.card .card{box-shadow:none}
 @media print{aside,.tabs,.per,.noprint{display:none}}
+
+body{background:radial-gradient(circle at 100% 0,rgba(242,183,5,.16),transparent 42%),radial-gradient(circle at 0 100%,rgba(18,53,133,.12),transparent 46%),var(--bg);background-attachment:fixed}
+.hd{position:relative;overflow:hidden;border-radius:18px;box-shadow:0 8px 22px rgba(10,31,92,.28);background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 230 120'%3E%3Cg stroke='%23f2b705' stroke-width='5' stroke-linecap='round' opacity='.85'%3E%3Cpath d='M170 38V14M140 50l-14-18M200 50l14-18M122 78h-24M218 78h-1'/%3E%3C/g%3E%3Ccircle cx='170' cy='86' r='28' fill='%23f2b705' opacity='.9'/%3E%3Cpath d='M0 120C70 92 110 112 170 98S215 100 230 108V120z' fill='%23123585'/%3E%3Cpath d='M95 120C120 100 150 104 175 96' stroke='%23fff' stroke-opacity='.5' stroke-width='3' fill='none'/%3E%3C/svg%3E") no-repeat right bottom/200px,radial-gradient(circle at 90% 0,rgba(242,183,5,.28),transparent 45%),linear-gradient(120deg,#071642,var(--n2))}
+.hd h1{text-shadow:0 2px 10px rgba(0,0,0,.35)}.hd h1::after{content:"";display:block;width:56px;height:3px;border-radius:2px;margin-top:4px;background:linear-gradient(90deg,var(--g),transparent)}
+.tabs button{transition:.2s}.tabs button:hover{background:rgba(242,183,5,.22)}.tabs button.on{background:linear-gradient(var(--g),#d99a00);box-shadow:0 0 14px rgba(242,183,5,.6)}
+h2{display:flex;align-items:center;gap:10px}h2::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,var(--g),transparent)}
+.card{border-radius:16px;box-shadow:0 4px 14px rgba(10,31,92,.08);animation:up .4s ease both}.card b{font-variant-numeric:tabular-nums}
+.card>b:first-child{font:700 16px Georgia,serif}.card>b:first-child::before{content:"";display:inline-block;width:7px;height:18px;border-radius:4px;background:linear-gradient(var(--g),#d99a00);margin-right:8px;vertical-align:-3px}
+.tag b{font-size:inherit;font-family:inherit}.tag b::before{display:none}
+.grid>.card{position:relative;overflow:hidden;border-left:5px solid transparent;transition:transform .2s,box-shadow .2s}.grid>.card:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(10,31,92,.16)}
+.s1{background:linear-gradient(135deg,#eafaf1,#c6efd7);border-left-color:#1aa15a!important}.s2{background:linear-gradient(135deg,#fff0f1,#f8c9ce);border-left-color:#d02b3a!important}.s3{background:linear-gradient(135deg,#eef4ff,#c7dbfb);border-left-color:#2f6fe0!important}.s4{background:linear-gradient(135deg,#f5efff,#d9c9f7);border-left-color:#7b4fd8!important}
+.ic{position:absolute;right:12px;top:10px;font-size:28px;font-style:normal;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))}
+table{border-collapse:separate;border-spacing:0}th{background:linear-gradient(var(--n2),var(--n))}th:first-child{border-radius:8px 0 0 0}th:last-child{border-radius:0 8px 0 0}
+tr:nth-child(even) td{background:rgba(18,53,133,.035)}tr:hover td{background:rgba(242,183,5,.13)}
+button.a,summary{border-radius:20px;box-shadow:0 3px 8px rgba(217,154,0,.35);transition:transform .15s,filter .15s}button.a:hover,summary:hover{filter:brightness(1.08);transform:translateY(-1px)}button.a:active{transform:scale(.97)}
+input:focus,select:focus{outline:2px solid var(--g);border-color:var(--g)}
+.empty::before{content:"🌅 "}.tag{border-radius:12px;background:#f3f6ff}.tag.in{background:#e3f6ec;color:var(--in);border-color:#a8e0bf}
+aside{display:flex;flex-direction:column;border-right:2px solid var(--g);background:radial-gradient(circle at 50% 100%,rgba(242,183,5,.3),transparent 55%),linear-gradient(180deg,#071642,var(--n))}
+aside .lg{padding-bottom:12px;margin-bottom:10px;border-bottom:1px solid rgba(242,183,5,.35);font:700 18px Georgia,serif}aside img{box-shadow:0 0 14px rgba(242,183,5,.55)}
+aside button{transition:.2s;margin-bottom:4px}aside button:hover{background:rgba(255,255,255,.1);transform:translateX(4px)}
+aside::after{content:"☀  A brighter path for a greater future";margin-top:auto;padding:24px 8px 8px;font:italic 13px Georgia,serif;color:var(--g);text-align:center}
+#lock{overflow:hidden}#lock::before{content:"";position:absolute;inset:-60%;background:repeating-conic-gradient(rgba(242,183,5,.13) 0 5deg,transparent 5deg 15deg);animation:spin 90s linear infinite}
+#lock .box{position:relative;box-shadow:0 0 0 6px rgba(242,183,5,.25),0 20px 50px rgba(0,0,0,.45);animation:up .5s ease both}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes up{from{opacity:0;transform:translateY(10px)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div id="lock"></div><div class="shell"><aside id="side"></aside><main><div class="hd"><h1>Bright Path Finance</h1><div class="row"><div class="tabs" id="tabs"></div><div class="per" id="per"></div></div></div><div id="app"></div></main></div>
+<div id="lock"></div><div id="scrim" onclick="menu(0)"></div><div class="shell"><aside id="side"></aside><main><div class="hd"><div class="ttl"><button class="mb" onclick="menu(1)" aria-label="Open menu">☰</button><h1>Bright Path Finance</h1></div><div class="row"><div class="tabs" id="tabs"></div><div class="per" id="per"></div></div></div><div id="app"></div></main></div>
 <script>
 var DIV={edu:'Educational Services',acad:'Academy',ceo:'CEO’s Desk'},td=new Date().toISOString().slice(0,10),M=td.slice(0,7),Y=td.slice(0,4),tab='home',dip=null;
 var S={open:0,tx:[],pipe:[],stu:[],wish:[],staff:[]};
@@ -76,35 +105,23 @@ function ml(){return new Date(M+'-01T00:00:00').toLocaleString('en-GB',{month:'l
 function cyc(){var y=+M.slice(0,4),mo=+M.slice(5);return '1 – '+new Date(y,mo,0).getDate()+' '+ml()}
 function dflt(){return M===td.slice(0,7)?td:M+'-01'}
 function step(n){if(tab==='year')Y=String(+Y+n);else{var d=new Date(M+'-01T00:00:00');d.setMonth(d.getMonth()+n);M=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}render()}
-function setTab(t){tab=t;render();window.scrollTo(0,0)}
+function menu(o){document.getElementById('side').classList.toggle('open',!!o);document.getElementById('scrim').classList.toggle('on',!!o)}
+function setTab(t){menu(0);tab=t;render();window.scrollTo(0,0)}
 function del(k,i){S[k]=S[k].filter(function(x){return x.id!==i});save();render()}
 function addTx(d,t,p){var a=parseFloat(v(p+'a'));if(!(a>0))return alert('Enter an amount');var c=document.getElementById(p+'c');
  S.tx.push({id:id(),d:v(p+'d')||dflt(),div:d||v('qv'),type:t||v('qt'),cat:c?v(p+'c'):'op',desc:v(p+'n')||'(no note)',amt:a});save();render()}
 function txTable(d,t){
  var rows=S.tx.filter(function(x){return x.div===d&&x.type===t&&x.d.slice(0,7)===M}).sort(function(a,b){return b.d<a.d?-1:1}),p=d+t;
- var h='<div class="card"><b class="'+t+'" style="font-size:16px">'+(t==='in'?'Income':'Expenditure')+'</b><div class="f"><input type="date" id="'+p+'d" value="'+dflt()+'"><input id="'+p+'n" placeholder="Description"><input id="'+p+'a" type="number" inputmode="decimal" placeholder="Amount ₦">';
- if(t==='out')h+='<select id="'+p+'c"><option value="direct">Direct cost</option><option value="op">Operating</option></select>';
- h+='<button class="a" onclick="addTx(\''+d+'\',\''+t+'\',\''+p+'\')">Add</button></div><div class="sc"><table>';
+ var h='<div class="card"><b class="'+t+'">'+(t==='in'?'Income':'Expenses')+'</b><details><summary>+ Add</summary><div class="f"><input type="date" id="'+p+'d" value="'+dflt()+'"><input id="'+p+'n" placeholder="Description"><input id="'+p+'a" type="number" inputmode="decimal" placeholder="Amount ₦">'+(t==='out'?'<select id="'+p+'c"><option value="direct">Direct cost</option><option value="op">Operating</option></select>':'')+'<button class="a" onclick="addTx(\''+d+'\',\''+t+'\',\''+p+'\')">Save</button></div></details><div class="sc"><table>';
  if(!rows.length)return h+'</table><div class="empty">Nothing this month</div></div></div>';
- h+='<tr><th>Date</th><th>Description</th>'+(t==='out'?'<th>Type</th>':'')+'<th class="r">Amount</th><th></th></tr>';
- rows.forEach(function(x){h+='<tr><td>'+x.d+'</td><td>'+esc(x.desc)+'</td>'+(t==='out'?'<td><span class="tag">'+(x.cat==='direct'?'Direct':'Operating')+'</span></td>':'')+'<td class="r '+t+'">'+m(x.amt)+'</td><td><button class="x" onclick="del(\'tx\','+x.id+')">×</button></td></tr>'});
+ rows.forEach(function(x){h+='<tr><td>'+x.d.slice(5)+'</td><td>'+esc(x.desc)+(x.cat==='direct'&&t==='out'?' <span class="tag">direct</span>':'')+'</td><td class="r '+t+'">'+m(x.amt)+'</td><td><button class="x" onclick="del(\'tx\','+x.id+')">×</button></td></tr>'});
  return h+'</table></div></div>'}
-function summary(d){var i=sum(d,'in'),dc=sum(d,'out','direct'),oc=sum(d,'out','op'),g=i-dc,n=g-oc;
- function c(l,x,k,s){return '<div class="card '+s+'"><small>'+l+'</small><b class="'+k+'">'+m(x)+'</b></div>'}
- return '<div class="grid">'+c('Income',i,'in','s1')+c('Direct costs',dc,'out','s2')+c('Gross '+(g<0?'loss':'profit'),Math.abs(g),g<0?'out':'in','s3')+c('Operating expenses',oc,'out','s2')+c('Net '+(n<0?'loss':'profit'),Math.abs(n),n<0?'out':'in','s4')+'</div>'}
+function summary(d){var i=sum(d,'in'),o=sum(d,'out'),g=i-sum(d,'out','direct'),n=i-o;
+ function c(l,x,k,s,ic){return '<div class="card '+s+'"><i class="ic">'+ic+'</i><small>'+l+'</small><b class="'+k+'">'+m(x)+'</b></div>'}
+ return '<div class="grid">'+c('Income',i,'in','s1','💰')+c('Expenses',o,'out','s2','💸')+c('Gross '+(g<0?'loss':'profit'),Math.abs(g),g<0?'out':'in','s3','🪙')+c('Net '+(n<0?'loss':'profit'),Math.abs(n),n<0?'out':'in','s4','🏆')+'</div>'}
 function home(){
- var ti=sum(0,'in'),to=sum(0,'out'),n=ti-to;
- var h='<div class="grid" style="margin-top:10px"><div class="card s1"><small>Total income</small><b class="in">'+m(ti)+'</b></div><div class="card s2"><small>Total expenditure</small><b class="out">'+m(to)+'</b></div><div class="card s3"><small>Net '+(n<0?'loss':'profit')+'</small><b class="'+(n<0?'out':'in')+'">'+m(Math.abs(n))+'</b></div><div class="card s4"><small>Money at hand (all time)</small><b>'+m(cash())+'</b></div></div>';
- h+='<div class="qa"><h2>Quick add</h2><div class="f"><select id="qv"><option value="edu">Educational Services</option><option value="acad">Academy</option><option value="ceo">CEO’s Desk</option></select><select id="qt"><option value="in">Income</option><option value="out">Expenditure</option></select><select id="qc"><option value="op">Operating</option><option value="direct">Direct cost</option></select><input type="date" id="qd" value="'+dflt()+'"><input id="qn" placeholder="Description"><input id="qa" type="number" inputmode="decimal" placeholder="Amount ₦"><button class="a" onclick="addTx(\'\',\'\',\'q\')">Add</button></div></div>';
- h+='<h2>By category · '+ml()+'</h2><div class="card sc"><table><tr><th>Category</th><th class="r">Income</th><th class="r">Expenditure</th><th class="r">Gross</th><th class="r">Net</th><th></th></tr>';
- Object.keys(DIV).forEach(function(d){var i=sum(d,'in'),o=sum(d,'out'),dc=sum(d,'out','direct');h+='<tr><td>'+DIV[d]+'</td><td class="r in">'+m(i)+'</td><td class="r out">'+m(o)+'</td><td class="r">'+m(i-dc)+'</td><td class="r '+(i-o<0?'out':'in')+'">'+m(i-o)+'</td><td><button class="x" onclick="setTab(\''+d+'\')">›</button></td></tr>'});
  var ow=S.stu.reduce(function(a,s){return a+Math.max(0,s.fee-s.paid)},0),cl=S.pipe.filter(function(p){return p.stage==='current'}).length,wl=S.wish.filter(function(w){return!w.got}).reduce(function(a,w){return a+w.amt},0);
- h+='</table></div><h2>At a glance</h2><div class="grid"><div class="card s1"><small>Student fees owed</small><b class="out">'+m(ow)+'</b></div><div class="card s3"><small>Current clients</small><b>'+cl+'</b></div><div class="card s4"><small>Wishlist expected</small><b>'+m(wl)+'</b></div></div>';
- var rec=S.tx.filter(function(x){return x.d.slice(0,7)===M}).sort(function(a,b){return b.id-a.id}).slice(0,8);
- h+='<h2>Recent transactions</h2><div class="card sc">';
- if(!rec.length)return h+'<div class="empty">No transactions this month. Add your first one above.</div></div>';
- h+='<table>';rec.forEach(function(x){h+='<tr><td>'+x.d+'</td><td>'+DIV[x.div]+'</td><td>'+esc(x.desc)+'</td><td class="r '+x.type+'">'+(x.type==='in'?'+':'−')+m(x.amt)+'</td><td><button class="x" onclick="del(\'tx\','+x.id+')">×</button></td></tr>'});
- return h+'</table></div>'}
+ return '<h2>At a glance</h2><div class="grid"><div class="card s1"><i class="ic">🎓</i><small>Student fees owed</small><b class="out">'+m(ow)+'</b></div><div class="card s3"><i class="ic">🤝</i><small>Current clients</small><b>'+cl+'</b></div><div class="card s4"><i class="ic">🎁</i><small>Wishlist expected</small><b>'+m(wl)+'</b></div></div>'}
 function year(){
  var h='<h2>Yearly report · '+Y+'</h2><div class="card sc"><table><tr><th>Month</th><th class="r">Income</th><th class="r">Expenditure</th><th class="r">Gross</th><th class="r">Net</th></tr>',T=[0,0,0];
  for(var i=1;i<=12;i++){var p=Y+'-'+(i<10?'0':'')+i,a=sum(0,'in','',p),o=sum(0,'out','',p),dc=sum(0,'out','direct',p);T[0]+=a;T[1]+=o;T[2]+=dc;
@@ -113,35 +130,38 @@ function year(){
  Object.keys(DIV).forEach(function(d){var a=sum(d,'in','',Y),o=sum(d,'out','',Y),dc=sum(d,'out','direct',Y);h+='<tr><td>'+DIV[d]+'</td><td class="r in">'+m(a)+'</td><td class="r out">'+m(o)+'</td><td class="r">'+m(a-dc)+'</td><td class="r '+(a-o<0?'out':'in')+'">'+m(a-o)+'</td></tr>'});
  return h+'</table></div><p class="noprint"><button class="a" onclick="window.print()">Print / save as PDF</button></p>'}
 function edu(){
- var st={potential:'Potential clients',interview:'Interviews secured',current:'Current clients'},h='<h2>Client pipeline</h2><div class="grid">';
- Object.keys(st).forEach(function(k){h+='<div class="card s3"><small>'+st[k]+'</small><b>'+S.pipe.filter(function(p){return p.stage===k}).length+'</b></div>'});
- h+='</div><div class="card" style="margin-top:10px"><div class="f"><input id="pn" placeholder="Name / company"><select id="ps"><option value="potential">Potential</option><option value="interview">Interview secured</option><option value="current">Current client</option></select><button class="a" onclick="addP()">Add</button></div><div class="sc"><table>';
- S.pipe.forEach(function(p){h+='<tr><td>'+esc(p.name)+'</td><td><span class="tag">'+st[p.stage]+'</span></td><td class="r">'+(p.stage!=='current'?'<button class="x" title="Move forward" onclick="adv('+p.id+')">→</button>':'')+'<button class="x" onclick="del(\'pipe\','+p.id+')">×</button></td></tr>'});
+ var st={potential:'Potential clients',interview:'Interviews secured',current:'Current clients'},h='<div class="card"><b>Client pipeline</b><div class="f">';
+ Object.keys(st).forEach(function(k){h+='<span class="tag"><b>'+S.pipe.filter(function(p){return p.stage===k}).length+'</b> '+st[k]+'</span>'});
+ h+='</div><details><summary>+ Add client</summary><div class="f"><input id="pn" placeholder="Name / company"><input id="pe" type="email" placeholder="Email"><select id="ps"><option value="potential">Potential</option><option value="interview">Interview secured</option><option value="current">Current client</option></select><button class="a" onclick="addP()">Save</button></div></details><div class="sc"><table>';
+ if(!S.pipe.length)return h+'</table><div class="empty">No clients yet</div></div></div>';
+ h+='<tr><th>Name</th><th>Email</th><th>Stage</th><th>Emailed</th><th></th></tr>';
+ S.pipe.forEach(function(p){h+='<tr><td>'+esc(p.name)+'</td><td>'+(p.email?'<a href="mailto:'+esc(p.email)+'">'+esc(p.email)+'</a>':'')+'</td><td><span class="tag">'+st[p.stage]+'</span></td><td><button class="x" title="Mark as emailed" onclick="sent('+p.id+')">'+(p.sent?'✔ '+p.sent:'Mark')+'</button></td><td class="r">'+(p.stage!=='current'?'<button class="x" title="Move forward" onclick="adv('+p.id+')">→</button>':'')+'<button class="x" onclick="del(\'pipe\','+p.id+')">×</button></td></tr>'});
  return h+'</table></div></div>'}
-function addP(){var n=v('pn').trim();if(!n)return;S.pipe.push({id:id(),name:n,stage:v('ps')});save();render()}
+function addP(){var n=v('pn').trim();if(!n)return;S.pipe.push({id:id(),name:n,email:v('pe').trim(),stage:v('ps'),sent:''});save();render()}
+function sent(i){S.pipe.forEach(function(p){if(p.id===i)p.sent=p.sent?'':td});save();render()}
 function adv(i){S.pipe.forEach(function(p){if(p.id===i)p.stage=p.stage==='potential'?'interview':'current'});save();render()}
 function endD(s){var d=new Date(s+'T00:00:00');d.setMonth(d.getMonth()+1);d.setDate(d.getDate()-1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function acad(){
- var h='<h2>Student fee tracker</h2><div class="card"><div class="f"><input id="sn" placeholder="Student name"><input id="sc" placeholder="Class"><input id="sf" type="number" inputmode="decimal" placeholder="Monthly fee ₦"><input id="ss" type="date" value="'+td+'"><button class="a" onclick="addS()">Add student</button></div><div class="note">Each cycle runs one full month from the start of lessons.</div><div class="sc"><table>';
+ var h='<div class="card"><b>Student fees</b><details><summary>+ Add student</summary><div class="f"><input id="sn" placeholder="Student name"><input id="sc" placeholder="Class"><input id="sf" type="number" inputmode="decimal" placeholder="Monthly fee ₦"><input id="ss" type="date" value="'+td+'"><button class="a" onclick="addS()">Save</button></div></details><div class="sc"><table>';
  if(!S.stu.length)return h+'</table><div class="empty">No students yet</div></div>';
- h+='<tr><th>Student</th><th>Class</th><th>Start</th><th>End</th><th class="r">Fee</th><th class="r">Paid</th><th class="r">Owing</th><th>Status</th><th>Pay</th><th></th></tr>';
+ h+='<tr><th>Student</th><th>Class</th><th>Cycle</th><th class="r">Fee</th><th class="r">Paid</th><th class="r">Owing</th><th>Status</th><th>Pay</th><th></th></tr>';
  S.stu.forEach(function(s){var e=endD(s.start),o=Math.max(0,s.fee-s.paid);
-  h+='<tr><td>'+esc(s.name)+'</td><td>'+esc(s.cls)+'</td><td>'+s.start+'</td><td>'+e+'</td><td class="r">'+m(s.fee)+'</td><td class="r in">'+m(s.paid)+'</td><td class="r out">'+m(o)+'</td><td><span class="tag">'+(o===0?'Paid':td>e?'Overdue':'Owing')+'</span></td><td><input id="p'+s.id+'" type="number" inputmode="decimal" style="width:90px;flex:none" placeholder="₦"><button class="x" title="Record payment" onclick="pay('+s.id+')">✔</button><button class="x" title="Start next cycle" onclick="renew('+s.id+')">↻</button></td><td><button class="x" onclick="del(\'stu\','+s.id+')">×</button></td></tr>'});
+  h+='<tr><td>'+esc(s.name)+'</td><td>'+esc(s.cls)+'</td><td>'+s.start+' → '+e+'</td><td class="r">'+m(s.fee)+'</td><td class="r in">'+m(s.paid)+'</td><td class="r out">'+m(o)+'</td><td><span class="tag">'+(o===0?'Paid':td>e?'Overdue':'Owing')+'</span></td><td><input id="p'+s.id+'" type="number" inputmode="decimal" style="width:90px;flex:none" placeholder="₦"><button class="x" title="Record payment" onclick="pay('+s.id+')">✔</button><button class="x" title="Start next cycle" onclick="renew('+s.id+')">↻</button></td><td><button class="x" onclick="del(\'stu\','+s.id+')">×</button></td></tr>'});
  return h+'</table></div></div>'}
 function addS(){var n=v('sn').trim(),f=parseFloat(v('sf'));if(!n||!(f>=0))return alert('Enter name and fee');S.stu.push({id:id(),name:n,cls:v('sc'),fee:f,paid:0,start:v('ss')||td});save();render()}
 function pay(i){var a=parseFloat(v('p'+i));if(!(a>0))return;S.stu.forEach(function(s){if(s.id===i){s.paid+=a;S.tx.push({id:id(),d:td,div:'acad',type:'in',cat:'op',desc:'Fee: '+s.name,amt:a})}});save();render()}
 function renew(i){S.stu.forEach(function(s){if(s.id===i){var d=new Date(endD(s.start)+'T00:00:00');d.setDate(d.getDate()+1);s.start=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');s.paid=0}});save();render()}
 function stf(d){
- var L=S.staff.filter(function(s){return s.div===d}),h='<h2>Staff</h2><div class="card"><div class="f"><input id="tn" placeholder="Staff name"><input id="tr" placeholder="Role"><input id="ts" type="number" inputmode="decimal" placeholder="Monthly salary ₦"><button class="a" onclick="addT(\''+d+'\')">Add staff</button></div><div class="sc"><table>';
- if(!L.length)return h+'</table><div class="empty">No staff yet</div></div>';
+ var L=S.staff.filter(function(s){return s.div===d}),h='<div class="card"><b>Staff</b><details><summary>+ Add staff</summary><div class="f"><input id="tn" placeholder="Staff name"><input id="tr" placeholder="Role"><input id="ts" type="number" inputmode="decimal" placeholder="Monthly salary ₦"><button class="a" onclick="addT(\''+d+'\')">Save</button></div></details><div class="sc"><table>';
+ if(!L.length)return h+'</table><div class="empty">No staff yet</div></div></div>';
  h+='<tr><th>Name</th><th>Role</th><th class="r">Salary</th><th>'+ml()+'</th><th></th></tr>';
  L.forEach(function(s){var pd=S.tx.some(function(x){return x.sid===s.id&&x.d.slice(0,7)===M});h+='<tr><td>'+esc(s.name)+'</td><td>'+esc(s.role)+'</td><td class="r">'+m(s.sal)+'</td><td>'+(pd?'<span class="tag in">Paid</span>':'<button class="a" onclick="payT('+s.id+')">Pay</button>')+'</td><td><button class="x" onclick="del(\'staff\','+s.id+')">×</button></td></tr>'});
- return h+'</table></div><div class="note">Paying adds an operating expense to this category for the selected month.</div></div>'}
+ return h+'</table></div></div>'}
 function addT(d){var n=v('tn').trim(),a=parseFloat(v('ts'));if(!n||!(a>=0))return alert('Enter name and salary');S.staff.push({id:id(),div:d,name:n,role:v('tr'),sal:a});save();render()}
 function payT(i){S.staff.forEach(function(s){if(s.id===i)S.tx.push({id:id(),d:dflt(),div:s.div,type:'out',cat:'op',desc:'Salary: '+s.name,amt:s.sal,sid:s.id})});save();render()}
 function ceo(){
- var h='<h2>Bank (money at hand)</h2><div class="grid"><div class="card s4"><small>Currently at hand</small><b>'+m(cash())+'</b></div><div class="card"><small>Opening balance</small><div class="f"><input id="ob" type="number" inputmode="decimal" value="'+S.open+'"><button class="a" onclick="S.open=parseFloat(v(\'ob\'))||0;save();render()">Set</button></div></div></div><div class="note">At hand = opening balance + all income − all expenditure, across every month and category.</div>';
- h+='<h2>Wishlist (expecting soon)</h2><div class="card"><div class="f"><input id="wi" placeholder="Item / expected money"><input id="wa" type="number" inputmode="decimal" placeholder="Amount ₦"><input id="wd" type="date"><button class="a" onclick="addW()">Add</button></div><div class="sc"><table>';
+ var h='<div class="card"><div class="row"><div><small>Money at hand</small><br><b style="font-size:22px">'+m(cash())+'</b></div><details><summary>Opening balance</summary><div class="f"><input id="ob" type="number" inputmode="decimal" value="'+S.open+'"><button class="a" onclick="S.open=parseFloat(v(\'ob\'))||0;save();render()">Set</button></div></details></div></div>';
+ h+='<div class="card" style="margin-top:10px"><b>Wishlist</b><details><summary>+ Add</summary><div class="f"><input id="wi" placeholder="Item / expected money"><input id="wa" type="number" inputmode="decimal" placeholder="Amount ₦"><input id="wd" type="date"><button class="a" onclick="addW()">Save</button></div></details><div class="sc"><table>';
  S.wish.forEach(function(w){h+='<tr style="'+(w.got?'opacity:.5':'')+'"><td>'+esc(w.item)+'</td><td class="r">'+m(w.amt)+'</td><td>'+(w.date||'')+'</td><td><button class="x" title="Mark received" onclick="got('+w.id+')">'+(w.got?'↩':'✔')+'</button><button class="x" onclick="del(\'wish\','+w.id+')">×</button></td></tr>'});
  return h+'</table></div></div>'}
 function addW(){var n=v('wi').trim();if(!n)return;S.wish.push({id:id(),item:n,amt:parseFloat(v('wa'))||0,date:v('wd'),got:false});save();render()}
@@ -152,16 +172,16 @@ function exp(){var a=document.createElement('a');a.href=URL.createObjectURL(new 
 function ld(t){if(document.getElementById('lock').classList.contains('on'))return alert('Unlock the app first');try{var o=JSON.parse(t);if(!o||!Array.isArray(o.tx))throw 0;S=Object.assign({open:0,tx:[],pipe:[],stu:[],wish:[],staff:[]},o);save();render();alert('Data imported')}catch(e){alert('That file is not a valid Bright Path backup')}}
 function imp(f){if(!f)return;if(!confirm('Replace current data with this file?'))return;var r=new FileReader();r.onload=function(){ld(r.result)};r.readAsText(f)}
 function render(){
- var T=[['home','Home'],['edu','Educational Services'],['acad','Academy'],['ceo','CEO’s Desk']],N=[['home','⌂ Dashboard'],['year','▤ Reports'],['set','⚙ Settings']];
+ var T=[['home','Home'],['edu','Educational Services'],['acad','Academy'],['ceo','CEO’s Desk']],N=[['home','🏠 Dashboard'],['year','📊 Reports'],['set','⚙️ Settings']];
  document.getElementById('tabs').innerHTML=T.map(function(t){return'<button class="'+(tab===t[0]?'on':'')+'" onclick="setTab(\''+t[0]+'\')">'+t[1]+'</button>'}).join('');
  document.getElementById('side').innerHTML='<div class="lg"><img src="icon-96.png" alt="Bright Path logo"><span>Bright Path</span></div>'+N.map(function(t){return'<button class="'+(tab===t[0]?'on':'')+'" onclick="setTab(\''+t[0]+'\')">'+t[1]+'</button>'}).join('')+'<button onclick="lockNow()">🔒 Lock</button>';
- document.getElementById('per').innerHTML=tab==='set'?'':'<button onclick="step(-1)" aria-label="Previous">‹</button><span>'+(tab==='year'?Y:ml())+'</span><button onclick="step(1)" aria-label="Next">›</button>';
- var h=tab==='home'?home():tab==='year'?year():tab==='set'?setg():'<div class="note" style="margin-top:8px">Cycle: '+cyc()+'</div>'+summary(tab)+'<h2>Income &amp; expenditure</h2><div class="two">'+txTable(tab,'in')+txTable(tab,'out')+'</div>'+(tab==='edu'?edu():tab==='acad'?acad():ceo())+(tab!=='ceo'?stf(tab):'');
+ document.getElementById('per').innerHTML=tab==='set'||tab==='home'?'':'<button onclick="step(-1)" aria-label="Previous">‹</button><span>'+(tab==='year'?Y:ml())+'</span><button onclick="step(1)" aria-label="Next">›</button>';
+ var h=tab==='home'?home():tab==='year'?year():tab==='set'?setg():'<div style="margin-top:10px">'+summary(tab)+'</div><div class="two" style="margin-top:10px">'+txTable(tab,'in')+txTable(tab,'out')+'</div><div style="margin-top:10px">'+(tab==='edu'?edu():tab==='acad'?acad():ceo())+'</div>'+(tab!=='ceo'?'<div style="margin-top:10px">'+stf(tab)+'</div>':'');
  document.getElementById('app').innerHTML=h}
 var PW=null,it,hid=0;try{PW=JSON.parse(localStorage.getItem('bpf_pw'))}catch(e){}
 function hx(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')}
 function hash(p,s){var e=new TextEncoder();return crypto.subtle.importKey('raw',e.encode(p),'PBKDF2',false,['deriveBits']).then(function(k){return crypto.subtle.deriveBits({name:'PBKDF2',salt:e.encode(s),iterations:150000,hash:'SHA-256'},k,256)}).then(hx)}
-function newPw(p,done){var s=hx(crypto.getRandomValues(new Uint8Array(16)));hash(p,s).then(function(h){PW={s:s,h:h};localStorage.setItem('bpf_pw',JSON.stringify(PW));done()})}
+function newPw(p,done){var s=hx(crypto.getRandomValues(new Uint8Array(16)));hash(p,s).then(function(h){PW={s:s,h:h};try{localStorage.setItem('bpf_pw',JSON.stringify(PW))}catch(e){}done()})}
 function isLocked(){return document.getElementById('lock').classList.contains('on')}
 function lockUI(){var L=document.getElementById('lock');L.classList.add('on');
  L.innerHTML='<div class="box"><img src="logo-lock.png" alt="Bright Path Educational Services logo"><h2>Bright Path Finance</h2>'+(PW?'<p>Enter your password</p><input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key===\'Enter\')unlock()"><div class="err" id="le"></div><button class="a" onclick="unlock()">Unlock</button>':'<p>Create a password to protect this app</p><input id="lp" type="password" placeholder="New password (min 4 characters)" autocomplete="new-password"><input id="lq" type="password" placeholder="Confirm password" autocomplete="new-password" onkeydown="if(event.key===\'Enter\')unlock()"><div class="err" id="le"></div><button class="a" onclick="unlock()">Set password</button>')+'</div>';
@@ -170,10 +190,12 @@ function unlock(){var p=v('lp'),e=document.getElementById('le'),bad=function(){e
  if(!PW){if(p.length<4){e.textContent='Use at least 4 characters';return}if(p!==v('lq')){e.textContent='Passwords do not match';return}newPw(p,openApp).catch(bad)}
  else hash(p,PW.s).then(function(h){if(h===PW.h)openApp();else{e.textContent='Wrong password';document.getElementById('lp').select()}}).catch(bad)}
 function openApp(){var L=document.getElementById('lock');L.classList.remove('on');L.innerHTML='';render();params();idle()}
-function lockNow(){['app','side','tabs','per'].forEach(function(i){document.getElementById(i).innerHTML=''});clearTimeout(it);lockUI()}
+function lockNow(){menu(0);['app','side','tabs','per'].forEach(function(i){document.getElementById(i).innerHTML=''});clearTimeout(it);lockUI()}
 function idle(){clearTimeout(it);it=setTimeout(lockNow,3e5)}
 function chg(){var n=v('c1');if(n.length<4)return alert('New password needs at least 4 characters');hash(v('c0'),PW.s).then(function(h){if(h!==PW.h)return alert('Current password is wrong');newPw(n,function(){alert('Password changed');render()})}).catch(function(){alert('Password lock needs HTTPS')})}
 ['click','keydown','touchstart'].forEach(function(t){document.addEventListener(t,function(){if(!isLocked())idle()})});
+var tx0=null;document.addEventListener('touchstart',function(e){tx0=e.touches[0].clientX},{passive:true});
+document.addEventListener('touchend',function(e){if(tx0===null||isLocked())return;var dx=e.changedTouches[0].clientX-tx0;if(tx0<24&&dx>60)menu(1);else if(dx<-60)menu(0);tx0=null},{passive:true});
 document.addEventListener('visibilitychange',function(){if(document.hidden)hid=Date.now();else if(hid&&Date.now()-hid>6e4&&!isLocked())lockNow()});
 var q=new URLSearchParams(location.search);
 if(q.get('tab'))tab=q.get('tab');
